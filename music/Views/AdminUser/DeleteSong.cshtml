@@ -1,0 +1,71 @@
+﻿@model music.Models.Song
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Song</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.path)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.path)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.artist)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.artist)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.album)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.album)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.posterpath)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.posterpath)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "SongIndex")
+        </div>
+    }
+</div>

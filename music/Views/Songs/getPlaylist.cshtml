@@ -1,0 +1,67 @@
+﻿@model IEnumerable<music.Models.Playlists>
+<head>
+
+    <script src="/Scripts/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="/Scripts/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    function CallSendingForm(id) {
+        console.log("hello")
+        console.log("id is" + id );
+        var url = '@Url.Action("removeplaylist", "Songs")' + '?PlaylistId=' + id ;
+
+            jQuery.ajax({
+                url: url,
+
+                success: function (data) {
+                    console.log('Returned data is: ' + data);
+                   window.location ="../Songs/getPlaylist";
+                  //$("#"+data).replaceWith("<a href=@Url.Action("RemoveFavourite", "Songs")"+"?SongId="+data+"><i class='fas fa-heart' id="+data+"  ></i></a>")
+                }
+            });
+        }
+    </script>
+</head>
+<p>
+    @Html.ActionLink("Create New", "createPlaylist")
+</p>
+@{
+
+    if (ViewBag.Message == null)
+    {
+
+        @ViewBag.Message;
+    }
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PlaylistName)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+
+            </td>
+            <td>
+
+                @Html.ActionLink(item.PlaylistName, "viewsingleplaylist", new { id = item.Playlistid }) |
+                @Html.DisplayFor(modelItem => item.PlaylistName)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Playlistid }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Playlistid }) |
+                <button onclick=CallSendingForm("@item.Playlistid")>Remove</button>
+
+            </td>
+        </tr>
+    }
+
+</table>

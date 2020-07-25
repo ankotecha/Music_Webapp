@@ -1,0 +1,11 @@
+﻿
+@{
+    ViewBag.Title = "TrendingSong";
+}
+
+<h2>TrendingSong</h2>
+@ViewBag.trending
+@foreach (var item in ViewBag.trending)
+{
+    <img class="img-responsive" name="@item.SongId" width="250" height="150" src="@Url.Content(@item.posterpath)" >
+}

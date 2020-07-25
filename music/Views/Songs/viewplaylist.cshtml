@@ -1,0 +1,39 @@
+﻿﻿@model music.Models.UserPlaylist
+
+<div>
+    <h4>UserPlaylist</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.playlistid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.playlistid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.songid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.songid)
+        </dd>
+
+    </dl>
+</div>
+<table>
+    @foreach (var item in ViewBag.songs)
+    {
+        <tr>
+            <td>
+                @item
+            </td>
+        </tr>
+    }
+</table>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.primaryid }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,478 @@
+﻿@*@using music.Models;*@
+@model music.Models.Song
+
+@{
+    ViewBag.Title = "DisplaySong";
+}
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+}
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+@*<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">*@
+<link rel="stylesheet" href="/Content/styles.css">
+<style>
+
+    #wrapper {
+        width: 60%;
+        margin: 0 auto;
+        text-align: center;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="~/scripts/jquery-3.3.1.min.js"></script>
+<script src="~/scripts/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="/Scripts/jquery-3.3.1.min.js"></script>
+<script src="/Scripts/jquery.validate.min.js" type="text/javascript"></script>
+<script src="/Scripts/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>
+<h2>DisplaySong</h2>
+<p>
+    @Html.ActionLink("Your Favourites", "DisplayFavouriteSong")
+</p>
+@*@ViewBag.Favourite
+    @ViewBag.songs*@
+@using (Html.BeginForm("Search", "Songs", FormMethod.Post))
+{
+    <div>
+        Search by
+        @Html.TextBox("searchString")
+        @*<input id="Submit1" type="submit" value="Filter" />*@
+    </div>
+}
+
+<table class="table table-bordered table-striped table-hover" id="dataTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            @*<th>Play Audio</th>
+                <th>artist</th>*@
+            <th>audio</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+        @{int i = 0;}
+        @if (ViewBag.Favourite != null)
+
+        {
+            foreach (var item in ViewBag.Favourite)
+            {
+
+                <tr>
+                    <td>
+                        <div class="hovereffect">
+                            <img class="img-responsive" name="@item.SongId" width="250" height="150" src="@Url.Content(@item.posterpath)" onclick="musicPlay(this)" val=@i alt="">
+                            @*<div class="overlay">
+
+
+                                   <a class="info" href="#">
+                                        <audio controls>
+                                            <source src="@Url.Content(@item.path)" type="audio/mp3">
+                                        </audio>
+                                    </a><a class="info" href="#">
+                                        <audio controls>
+                                            <source src="~/Static/d.jpg" type="audio/mp3">
+                                        </audio>
+                                    </a>
+
+                                </div>*@
+                        </div>
+                    </td>
+
+
+
+
+                    <td>@item.name</td>
+
+                    <td>
+                        @*<audio controls>
+                                <source src="@Url.Content(@item.path)" type="audio/mp3">
+                                Your Browser don't support the audio tag
+                            </audio>*@
+                        <div class="audio-player">
+                            <audio id="@item.SongId" class=@i controls>
+                                <source src="@Url.Content(@item.path)" type="audio/mp3">
+                                Your Browser don't support the audio tag
+                            </audio>
+
+
+                            <button val=@i class="previous controls button"></button>
+                            <button val=@i class="next controls button"></button>
+
+                        </div>
+                    </td>
+                    <td><a href="@Url.Action("Artist", "Songs" , new { artist=@item.artist })">@item.artist</td>
+                    <td><a href="@Url.Action("Album", "Songs", new { album = @item.album })">@item.album</a></td>
+                    <td>
+                        <i id="@item.SongId" class="fas fa-heart" style='color:red;' onclick=CallSendingForm1("@item.SongId")>
+
+                        </i>
+                        @{i++;
+                        }
+                    </td>
+                    @*<td>@Html.ActionLink("more from album", "Album", "Songs", new { album = @item.album }, null)</td>*@
+                  
+
+
+
+                </tr>
+                <tr>
+                    <td>
+                        @Html.ActionLink("AddtoPlaylist", "addtoPlaylist", new { id = item.SongId })
+                    </td>
+                    <td>
+
+                        <button type="button" onclick="location.href='@Url.Action("getPlaylist", "Songs" )'">Playlist</button>
+
+                    </td>
+                    <td>
+                        @ViewBag.lyrics
+                    </td>
+                </tr>
+
+
+            }
+        }
+
+
+        @foreach (var item in ViewBag.songs)
+        {
+
+            <tr>
+                <td>
+                    <div class="hovereffect">
+                        <img class="img-responsive" name="@item.SongId" width="250" height="150" src="@Url.Content(@item.posterpath)" onclick="musicPlay(this)" val=@i alt="">
+                       
+
+                       
+                    </div>
+                </td>
+
+
+                <td>@item.name</td>
+                <td>
+                    <div class="audio-player">
+
+                        <audio id="@item.SongId" class="@i" controls>
+                            <source src="@Url.Content(@item.path)" type="audio/mp3">
+                            Your Browser don't support the audio tag
+                        </audio>
+
+
+
+
+
+
+                        <button val=@i class="previous controls button"></button>
+                        <button val=@i class="next controls button"></button>
+                    </div>
+                </td>
+                <td><a href="@Url.Action("Artist", "Songs" , new { artist=@item.artist })">@item.artist</td>
+                <td><a href="@Url.Action("Album", "Songs" , new { album=@item.album })">@item.album</a></td>
+                <td>
+                    <i id="@item.SongId" class="far fa-heart" onclick=CallSendingForm("@item.SongId")>
+
+                    </i>
+                </td>
+                @* <td>@Html.ActionLink("more from album", "Album", "Songs", new { album = @item.album }, null)</td>*@
+                
+
+
+
+
+
+                @{i++;
+                }
+            </tr>
+            <tr>
+                <td>
+                    @Html.ActionLink("AddtoPlaylist", "addtoPlaylist", new { id = item.SongId })
+                </td>
+                <td>
+
+                    <button type="button" onclick="location.href='@Url.Action("getPlaylist", "Songs" )'">Playlist</button>
+
+                </td>
+                <td>
+                    @ViewBag.lyrics
+                </td>
+            </tr>
+
+
+        }
+
+    </tbody>
+</table>
+<script type="text/javascript">
+    document.addEventListener('play', function (e) {
+        var audios = document.getElementsByTagName('audio');
+        console.log(e.target)
+        for (var i = 0, len = audios.length; i < len; i++) {
+            if (audios[i] != e.target) {
+                audios[i].pause();
+            }
+        }
+        var attr1 = e.target.id;
+        console.log(attr1)
+        var url = '@Url.Action("SongHistory", "Songs")' + "?SongId=" + attr1;
+
+        jQuery.ajax({
+            url: url,
+
+            success: function (data) {
+
+                console.log("data added")
+
+            }
+        })
+    }, true);
+
+
+    document.addEventListener('ended', function (e) {
+        var audios = document.getElementsByTagName('audio');
+        for (var i = 0, len = audios.length; i < len; i++) {
+            if (audios[i] == e.target) {
+                if (i < len - 1)
+                    audios[i + 1].play();
+                else
+                    audios[0].play();
+                break;
+            }
+
+
+        }
+    }, true);
+
+ function musicPlay(id) {
+        console.log(id)
+        var a = $(id).attr("val");
+        //var data1 = id;
+      //  var b=id
+       // console.log(b);
+        b = document.getElementsByClassName(a)[0]
+       // var b = $("audio[id="+ data1+"]");
+       if (b.paused)
+            b.play();
+       else
+          b.pause();
+        }
+
+    function CallSendingForm(sid1) {
+        console.log("hello")
+        var url = '@Url.Action("AddToFavourite", "Songs")' + "?SongId=" + sid1;
+        // My button is inside the form, if yours isn't just look for it your own way.
+        //var myForm = $(caller).parents("form");
+        //var data = $(myForm).serialize();
+        jQuery.ajax({
+        url: url,
+
+        success: function (data) {
+        if (data!=0) {
+        //  console.log('Returned data is: ' + data);
+        // $("#"+data).removeClass(".far fa-heart")
+        //$("#"+data).replaceClass(".fas fa-heart")
+        // "p[title|='GeeksForGeeks']"
+        $("i[id="+ data+"]").replaceWith("<i id=" + data + " class='fas fa-heart' style='color:red;' onclick=CallSendingForm1(" + data + ")></i>" )
+
+                        // $("#"+data).replaceWith("<a href=@Url.Action("RemoveFavourite", "Songs" )"+"?SongId="+data+"><i class='fas fa-heart' id="+data+"></i></a>")
+        }
+        else {
+        console.log("hello");
+        //alert("please login first")
+        window.location = "../Account/login"
+        }
+        }
+        });
+        }
+
+        function CallSendingForm1(sid1) {
+        console.log("hello")
+        var url = '@Url.Action("RemoveFavourite", "Songs")' + "?SongId=" + sid1;
+        // My button is inside the form, if yours isn't just look for it your own way.
+        //var myForm = $(caller).parents("form");
+        //var data = $(myForm).serialize();
+        jQuery.ajax({
+        url: url,
+
+        success: function (data) {
+        console.log('Returned data is: ' + data);
+        // $("#"+data).removeClass(".far fa-heart")
+        //$("#"+data).replaceClass(".fas fa-heart")
+        //
+        $("i[id="+ data+"]").replaceWith("<i id="+data+" class='far fa-heart' onclick=CallSendingForm("+data+")></i>")
+        //    $("#"+data).replaceWith("<a href=@Url.Action("AddToFavourite", "Songs" )"+"?SongId="+data+"><i class='far fa-heart' id="+data+"></i></a>")
+        }
+        });
+        }
+
+
+
+
+
+
+        $(document).ready(function () {
+        var audioplayer = $('.audio-player'),
+        //audioElement = $('.audio-player audio')[0],
+
+        previous = $('.audio-player .previous'),
+        next = $('.audio-player .next'),
+        audios = $('.audio-player audio source'),
+
+        currentAudioIndex = 0;
+
+
+
+
+        function playNext(id) {
+        var a = $(this).attr("val");
+
+        console.log(a);
+        // var b = $('.audio-player audio')[a - 1];
+        // var b= $(".audio-player audio[id="+a+"]")
+        //var c = document.getElementsByTagName("audio");
+        //  console.log(c)
+        var b = document.getElementsByClassName(a)[0]
+        console.log(b)
+        // b.play();
+        // currentAudioIndex++;
+        a++;
+        if (a >= audios.length) {
+        a = 0;
+        }
+        b = document.getElementsByClassName(a)[0]
+        //b.play()// = audios[currentAudioIndex].src;
+        b.play();
+        //audioElement.play();
+        }
+
+        function playPrevious() {
+        var a = $(this).attr("val");
+        // a--;
+        console.log(a);
+        var b = document.getElementsByClassName(a)[0]
+        console.log(b)
+        a--;
+
+        if ((a) < 0) {
+        a = audios.length - 1;
+        }
+        b = document.getElementsByClassName(a)[0]
+        //b.play()// = audios[currentAudioIndex].src;
+        b.play();
+        //  console.log(currentAudioIndex);
+        // audioElement.src = audios[currentAudioIndex].src;
+
+        //$('.audio-player audio')[a].play();
+        }
+
+
+        next.click(playNext);
+
+        previous.click(playPrevious);
+
+
+
+
+
+        });
+</script>
+<style>
+
+    .hovereffect {
+        width: 100%;
+        height: 100%;
+        float: left;
+        overflow: hidden;
+        position: relative;
+        text-align: center;
+        cursor: default;
+    }
+
+        .hovereffect .overlay {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            background-color: rgba(0,0,0,0.6);
+            opacity: 0;
+            filter: alpha(opacity=0);
+            -webkit-transform: translate(460px, -100px) rotate(180deg);
+            -ms-transform: translate(460px, -100px) rotate(180deg);
+            transform: translate(460px, -100px) rotate(180deg);
+            -webkit-transition: all 0.2s 0.4s ease-in-out;
+            transition: all 0.2s 0.4s ease-in-out;
+        }
+
+        .hovereffect img {
+            display: block;
+            position: relative;
+            -webkit-transition: all 0.2s ease-in;
+            transition: all 0.2s ease-in;
+        }
+
+        .hovereffect h2 {
+            text-transform: uppercase;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            font-size: 17px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .hovereffect a.info {
+            display: inline-block;
+            text-decoration: none;
+            padding: 7px 14px;
+            text-transform: uppercase;
+            color: #fff;
+            border: 1px solid #fff;
+            margin: 50px 0 0 0;
+            background-color: transparent;
+            -webkit-transform: translateY(-200px);
+            -ms-transform: translateY(-200px);
+            transform: translateY(-200px);
+            -webkit-transition: all 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .hovereffect a.info:hover {
+                box-shadow: 0 0 5px #fff;
+            }
+
+        .hovereffect:hover .overlay {
+            opacity: 1;
+            filter: alpha(opacity=100);
+            -webkit-transition-delay: 0s;
+            transition-delay: 0s;
+            -webkit-transform: translate(0px, 0px);
+            -ms-transform: translate(0px, 0px);
+            transform: translate(0px, 0px);
+        }
+
+        .hovereffect:hover h2 {
+            -webkit-transform: translateY(0px);
+            -ms-transform: translateY(0px);
+            transform: translateY(0px);
+            -webkit-transition-delay: 0.5s;
+            transition-delay: 0.5s;
+        }
+
+        .hovereffect:hover a.info {
+            -webkit-transform: translateY(0px);
+            -ms-transform: translateY(5px);
+            transform: translateY(0px);
+            -webkit-transition-delay: 0.3s;
+            transition-delay: 0.3s;
+        }
+</style>

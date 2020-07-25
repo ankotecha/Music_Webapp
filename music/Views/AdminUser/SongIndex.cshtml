@@ -1,0 +1,64 @@
+﻿@model IEnumerable<music.Models.Song>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Uploadfile")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.path)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.artist)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.album)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.posterpath)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.type)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.path)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.artist)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.album)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.posterpath)
+    </td>
+    <td>
+        @Html.ActionLink("Edit", "EditSong", new { id = item.SongId }) |
+        @Html.ActionLink("Details", "DetailsSong", new { id = item.SongId }) |
+        @Html.ActionLink("Delete", "DeleteSong", new { id = item.SongId })
+    </td>
+</tr>
+    }
+
+</table>

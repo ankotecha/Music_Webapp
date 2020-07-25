@@ -1,0 +1,276 @@
+﻿@model music.Models.Song
+
+@{
+    ViewBag.Title = "Artist";
+}
+
+<h2>Artist</h2>
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+}
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+@*<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">*@
+<link rel="stylesheet" href="/Content/styles.css">
+<style>
+
+    #wrapper {
+        width: 60%;
+        margin: 0 auto;
+        text-align: center;
+    }
+</style>
+<script language="JavaScript" type="text/javascript" src="/Scripts/jquery-3.3.1.min.js"></script>
+<script src="/Scripts/jquery.validate.min.js" type="text/javascript"></script>
+<script src="/Scripts/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>
+<h2>@ViewBag.artist- artist</h2>
+<p>
+    @Html.ActionLink("Your Favourites", "DisplayFavouriteSong")
+</p>
+@ViewBag.Favourite
+@ViewBag.songs
+@using (Html.BeginForm("Search", "Songs", FormMethod.Post))
+{
+    <div>
+        Search by
+        @Html.TextBox("searchString")
+        @*<input id="Submit1" type="submit" value="Filter" />*@
+    </div>
+}
+
+<table id="dataTable11" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            @*<th>Play Audio</th>
+                <th>artist</th>*@
+            <th>icon</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+        @if (ViewBag.Favourite != null)
+
+        {
+            foreach (var item in ViewBag.Favourite)
+            {
+
+                <tr>
+                    <td>@item.SongId</td>
+                    <td>@item.name</td>
+
+                    <td>
+                        @*<audio controls>
+                                <source src="@Url.Content(@item.path)" type="audio/mp3">
+                                Your Browser don't support the audio tag
+                            </audio>*@
+                        <div class="audio-player">
+                            <audio id="@item.SongId" controls>
+                                <source src="@Url.Content(@item.path)" type="audio/mp3">
+                                Your Browser don't support the audio tag
+                            </audio>
+
+
+                            <button id="@item.SongId" class="previous controls button"></button>
+                            <button id="@item.SongId" class="next controls button"></button>
+
+                        </div>
+                    </td>
+                    <td>@item.artist</td>
+                    <td>@item.album</td>
+                    <td>
+                        <i id="@item.SongId" class="fas fa-heart" style='color:red;' onclick=CallSendingForm1("@item.SongId")>
+
+                        </i>
+
+                    </td>
+
+                </tr>
+
+            }
+        }
+
+        @foreach (var item in ViewBag.songs)
+        {
+
+            <tr>
+                <td>@item.SongId</td>
+                <td>@item.name</td>
+
+                <td>
+                    <div class="audio-player">
+                        <audio id="@item.SongId" controls>
+                            <source src="@Url.Content(@item.path)" type="audio/mp3">
+                            Your Browser don't support the audio tag
+                        </audio>
+
+
+                        <button id="@item.SongId" class="previous controls button"></button>
+                        <button id="@item.SongId" class="next controls button"></button>
+
+                    </div>
+                </td>
+                <td>@item.artist</td>
+                <td>@item.album</td>
+                <td>
+                    <i id="@item.SongId" class="far fa-heart" onclick=CallSendingForm("@item.SongId")>
+
+                    </i>
+                </td>
+                @* <td>@Html.ActionLink("more from album", "Album", "Songs", new { album = @item.album }, null)</td>*@
+                <td></td>
+            </tr>
+
+        }
+
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+     $(document).ready(function () {
+    //    //$('#dataTable11').DataTable();
+
+        $("audio").on("play", function () {
+            $("audio").not(this).each(function (index, audio) {
+                audio.pause();
+            });
+        });
+    });
+    function CallSendingForm(sid1) {
+        console.log("hello")
+        var url = '@Url.Action("AddToFavourite", "Songs")' + "?SongId=" + sid1;
+            // My button is inside the form, if yours isn't just look for it your own way.
+            //var myForm = $(caller).parents("form");
+            //var data = $(myForm).serialize();
+            jQuery.ajax({
+                url: url,
+
+                success: function (data) {
+                   if (data!=0) {
+                        //  console.log('Returned data is: ' + data);
+                        // $("#"+data).removeClass(".far fa-heart")
+                        //$("#"+data).replaceClass(".fas fa-heart")
+                      // "p[title|='GeeksForGeeks']"
+                        $("i[id="+ data+"]").replaceWith("<i id=" + data + " class='fas fa-heart' style='color:red;' onclick=CallSendingForm1(" + data + ")></i>")
+
+                        // $("#"+data).replaceWith("<a href=@Url.Action("RemoveFavourite", "Songs")"+"?SongId="+data+"><i class='fas fa-heart' id="+data+"  ></i></a>")
+                    }
+                   else {
+                       console.log("hello");
+                       //alert("please login first")
+                       window.location = "../Account/login"
+                    }
+                }
+            });
+        }
+
+         function CallSendingForm1(sid1) {
+        console.log("hello")
+        var url = '@Url.Action("RemoveFavourite", "Songs")' + "?SongId=" + sid1;
+            // My button is inside the form, if yours isn't just look for it your own way.
+            //var myForm = $(caller).parents("form");
+            //var data = $(myForm).serialize();
+            jQuery.ajax({
+                url: url,
+
+                success: function (data) {
+                    console.log('Returned data is: ' + data);
+                   // $("#"+data).removeClass(".far fa-heart")
+                    //$("#"+data).replaceClass(".fas fa-heart")
+                  //
+                    $("i[id="+ data+"]").replaceWith("<i id="+data+" class='far fa-heart' onclick=CallSendingForm("+data+")></i>")
+              //    $("#"+data).replaceWith("<a href=@Url.Action("AddToFavourite", "Songs")"+"?SongId="+data+"><i class='far fa-heart' id="+data+"  ></i></a>")
+                }
+            });
+        }
+
+
+        @*function SearchMain(id) {
+            var d = id.value;
+            console.log(d)
+            var url = '@Url.Action("Search", "Songs")' + '?searchString=' + d;
+            // My button is inside the form, if yours isn't just look for it your own way.
+            //var myForm = $(caller).parents("form");
+            //var data = $(myForm).serialize();
+            jQuery.ajax({
+                url: url,
+
+                success: function (data) {
+                    console.log('Returned data is: '+data);
+                   // Window.location = "https://localhost:44316/Account/login";
+                    //Add your code here
+                }
+
+                //      jQuery(document).ready(function ($) {
+                //          $('#SearchImage').on('click', function () {
+                //            SearchMain();
+                //           });
+
+            });
+        }*@
+
+
+
+    $(document).ready(function () {
+	var audioplayer = $('.audio-player'),
+		//audioElement = $('.audio-player audio')[0],
+
+        previous = $('.audio-player .previous'),
+        next = $('.audio-player .next'),
+		        audios = $('.audio-player audio source'),
+
+        currentAudioIndex = 0;
+
+
+
+
+        function playNext(id) {
+            var a =  $(this).attr("id");
+
+            console.log(a);
+            var b = $('.audio-player audio')[a-1];
+            b.pause();
+       // currentAudioIndex++;
+
+        if (a >= audios.length) {
+            a = 0;
+        }
+
+         $('.audio-player audio')[a].play()// = audios[currentAudioIndex].src;
+
+        //audioElement.play();
+    }
+
+    function playPrevious() {
+        var a = $(this).attr("id");
+        a--;
+         console.log(a);
+            var b = $('.audio-player audio')[a];
+            b.pause();
+
+        a--;
+        if ((a) < 0) {
+            a = audios.length - 1;
+        }
+
+      //  console.log(currentAudioIndex);
+       // audioElement.src = audios[currentAudioIndex].src;
+
+        $('.audio-player audio')[a].play();
+    }
+
+
+    next.click(playNext);
+
+    previous.click(playPrevious);
+
+
+
+});
+
+</script>
